@@ -26,18 +26,17 @@ def bakeries():
 
 @app.route('/bakeries/<int:id>')
 def bakery_by_id(id):
-    bakery = Bakery.query.get(id)
+    bakery = db.session.get(Bakery, id)
     if bakery:
         data = {
             'id': bakery.id,
             'name': bakery.name,
             'created_at': bakery.created_at
-        } 
-        
+        }
         return jsonify(data), 200
     else:
         return jsonify({'error': 'Bakery not found'}), 404
-
+    
 @app.route('/baked_goods/by_price')
 def baked_goods_by_price():
     baked_goods = BakedGood.query.order_by(BakedGood.price.desc()).all()
@@ -46,11 +45,12 @@ def baked_goods_by_price():
             'id': bg.id, 
             'name': bg.name, 
             'price': bg.price,
-            'created_at': bg.created_at  # Include 'created_at' field
+            'created_at': bg.created_at
         } 
         for bg in baked_goods
     ]
     return jsonify(data), 200
+
 
 @app.route('/baked_goods/most_expensive')
 def most_expensive_baked_good():
@@ -60,7 +60,7 @@ def most_expensive_baked_good():
             'id': most_expensive.id, 
             'name': most_expensive.name, 
             'price': most_expensive.price,
-            'created_at': most_expensive.created_at  # Include 'created_at' field
+            'created_at': most_expensive.created_at
         }
         return jsonify(data), 200
     else:
